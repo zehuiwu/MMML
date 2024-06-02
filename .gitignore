@@ -1,0 +1,8 @@
+# /data/MOSEI/Raw/*
+# /data/MOSI/Raw/*
+# /data/SIMS/Raw/*
+# /data/MOSEI/wav/*
+# /data/MOSI/wav/*
+# /data/SIMS/wav/*
+/data/*
+/checkpoint/*

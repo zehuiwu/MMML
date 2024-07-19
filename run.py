@@ -15,9 +15,9 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--seed', type=int, default=1, help='random seed')
-    parser.add_argument('--batch_size', type=int, default=16, help='batch size')
+    parser.add_argument('--batch_size', type=int, default=8, help='batch size')
     parser.add_argument('--lr', type=float, default=5e-6, help='learning rate, recommended: 5e-6 for mosi, mosei, 1e-5 for sims')
-    parser.add_argument('--model', type=str, default='cc', help='concatenate(cc) or cross-modality encoder(cme)')
+    parser.add_argument('--model', type=str, default='cme', help='concatenate(cc) or cross-modality encoder(cme)')
     parser.add_argument('--cme_version', type=str, default='v1', help='version')
     parser.add_argument('--dataset', type=str, default='mosi', help='dataset name: mosi, mosei, sims')
     parser.add_argument('--num_hidden_layers', type=int, default=5, help='number of hidden layers for cross-modality encoder')

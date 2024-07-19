@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from tqdm import tqdm
 from utils.metricsTop import MetricsTop
-from utils.context_model import rob_d2v_cc_context
+from utils.context_model import rob_d2v_cc_context, rob_d2v_cme_context
 from utils.en_model import rob_d2v_cc, rob_d2v_cme
 import random
 import numpy as np
@@ -218,7 +218,10 @@ def EnRun(config):
                                                         audio_context_length=config.audio_context_len)
 
     if config.context:
-        model = rob_d2v_cc_context(config).to(device)
+        if config.model == 'cc':
+            model = rob_d2v_cc_context(config).to(device)
+        elif config.model == 'cme':
+            model = rob_d2v_cme_context(config).to(device)
         for param in model.data2vec_model.feature_extractor.parameters():
             param.requires_grad = False
     else:
@@ -240,21 +243,20 @@ def EnRun(config):
         epoch += 1
         trainer.do_train(model, train_loader)
         eval_results = trainer.do_test(model, val_loader,"VAL")
-    #         test_results = trainer.do_test(model, test_loader,"TEST")
+
         if eval_results['Loss']<lowest_eval_loss:
             lowest_eval_loss = eval_results['Loss']
-            torch.save(model.state_dict(), config.model_save_path+'RH_loss.pth')
+            torch.save(model.state_dict(), config.model_save_path+f'RH_loss_{config.dataset_name}_{config.seed}_{lowest_eval_loss}.pth')
             best_epoch = epoch
         if eval_results['Has0_acc_2']>=highest_eval_acc:
             highest_eval_acc = eval_results['Has0_acc_2']
-            torch.save(model.state_dict(), config.model_save_path+'RH_acc.pth')
+            torch.save(model.state_dict(), config.model_save_path+f'RH_acc_{config.dataset_name}_{config.seed}_{highest_eval_acc}.pth')
         if epoch - best_epoch >= config.early_stop:
             break
-    model.load_state_dict(torch.load(config.model_save_path+'RH_acc.pth'))        
+    model.load_state_dict(torch.load(config.model_save_path+f'RH_acc_{config.dataset_name}_{config.seed}_{highest_eval_acc}.pth'))        
     test_results_loss = trainer.do_test(model, test_loader,"TEST")
     print('%s: >> ' %('TEST (highest val acc) ') + dict_to_str(test_results_loss))
 
-    model.load_state_dict(torch.load(config.model_save_path+'RH_loss.pth'))
+    model.load_state_dict(torch.load(config.model_save_path+f'RH_loss_{config.dataset_name}_{config.seed}_{lowest_eval_loss}.pth'))
     test_results_acc = trainer.do_test(model, test_loader,"TEST")
     print('%s: >> ' %('TEST (lowest val loss) ') + dict_to_str(test_results_acc))
-        

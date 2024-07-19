@@ -91,6 +91,12 @@ class Dataset_mosi(torch.utils.data.Dataset):
     
     def __init__(self, csv_path, audio_directory, mode, text_context_length=2, audio_context_length=1):
         df = pd.read_csv(csv_path)
+        invalid_files = ['3aIQUQgawaI/12.wav', '94ULum9MYX0/2.wav', 'mRnEJOLkhp8/24.wav', 'aE-X_QdDaqQ/3.wav', '94ULum9MYX0/11.wav', 'mRnEJOLkhp8/26.wav']
+        for f in invalid_files:
+            video_id = f.split('/')[0]
+            clip_id = f.split('/')[1].split('.')[0]
+            df = df[~((df['video_id']==video_id) & (df['clip_id']==int(clip_id)))]
+
         df = df[df['mode']==mode].sort_values(by=['video_id','clip_id']).reset_index()
         
         # store labels

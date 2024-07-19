@@ -9,7 +9,7 @@
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/multi-modality-multi-loss-fusion-network/multimodal-sentiment-analysis-on-cmu-mosei-1)](https://paperswithcode.com/sota/multimodal-sentiment-analysis-on-cmu-mosei-1?p=multi-modality-multi-loss-fusion-network)
 
-Paper link: https://arxiv.org/abs/2308.00264
+Paper link: https://arxiv.org/abs/2308.00264 (NAACL2024 oral)
 
 
 ## Updates

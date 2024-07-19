@@ -1,4 +1,4 @@
-# Multi-Modality Multi-Loss Fusion Network (MMML)
+# Multimodal Multi-Loss Fusion Network (MMML)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/multi-modality-multi-loss-fusion-network/multimodal-sentiment-analysis-on-cmu-mosi)](https://paperswithcode.com/sota/multimodal-sentiment-analysis-on-cmu-mosi?p=multi-modality-multi-loss-fusion-network)
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/multi-modality-multi-loss-fusion-network/multimodal-sentiment-analysis-on-mosi)](https://paperswithcode.com/sota/multimodal-sentiment-analysis-on-mosi?p=multi-modality-multi-loss-fusion-network)

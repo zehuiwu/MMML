@@ -45,6 +45,12 @@ Parameter: Default (batch_size=8, lr=5e-6, loss='MTA', text_context_len=2, audio
 
 Details: We use the large version of pre-trained models for this setting. We found that while the large models didn't improve upon the base models in context-free scenarios, they boosted improvement when using context. 
 
+
+## Environment setup
+1. create a new environment using conda or pip (We use Python 3.8.10)
+2. ```pip install -r requirements.txt```
+
+
 ## Download Data
 The three datasets (CMU-MOSI, CMU-MOSEI, and CH-SIMS) are available from this link: https://drive.google.com/drive/folders/1A2S4pqCHryGmiqnNSPLv7rEg63WvjCSk
 

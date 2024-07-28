@@ -26,11 +26,14 @@ def extract(dataset):
                 continue
             input_file_path = os.path.join(input_folder_path, file_name)
             output_file_path = os.path.join(output_folder_path, file_name)
+            if "-edited.mp4" in output_file_path:
+                output_file_path = output_file_path.replace("-edited.mp4", ".mp4")
+            output_file_path = output_file_path.replace(".mp4", ".wav")
             # Skip if the video file is already edited
             if os.path.exists(input_file_path.replace(".mp4", "-edited.mp4")):
                 continue
             # Skip if the audio file already exists
-            if os.path.exists(output_file_path.replace(".mp4", ".wav")) or os.path.exists(output_file_path.replace("-edited.mp4", ".wav")):
+            if os.path.exists(output_file_path):
                 continue
             try:
                 # Load the video file
@@ -45,16 +48,19 @@ def extract(dataset):
                 # Resample the audio to the desired sampling rate
                 resampled_audio = audio.set_fps(desired_sampling_rate)
                 
-                if "-edited.mp4" in output_file_path:
-                    output_file_path = output_file_path.replace("-edited.mp4", ".mp4")
-                output_file_path = output_file_path.split(".")[0] + '.wav'
-                
                 # Save the extracted and resampled audio to a WAV file
                 resampled_audio.write_audiofile(output_file_path, codec='pcm_s16le', verbose=False, logger=None)
-            except:
-                # sometimes the edited video lost audio, so we extract audio from the original video instead
-                continue
-                # print(input_file_path)
+            except Exception as e:
+                # one edited video lost audio, so we extract audio from the original video instead
+                # there are also 6 videos that are corrupted, so we skip them
+                print(input_file_path, e)
+                if "-edited.mp4" in input_file_path:
+                    input_file_path = input_file_path.replace("-edited.mp4", ".mp4")
+                    video = VideoFileClip(input_file_path)
+                    audio = video.audio
+                    desired_sampling_rate = 16000
+                    resampled_audio = audio.set_fps(desired_sampling_rate)
+                    resampled_audio.write_audiofile(output_file_path, codec='pcm_s16le', verbose=False, logger=None)
 
 
 def preprocess_video_file(filename):
@@ -73,8 +79,7 @@ def preprocess_video_file(filename):
             return None
         else:
             duration = (frame_counter - 1) / fps
-            print("Fixing bad video file!")
-            print(filename)
+            print(f"Fixing bad video file: {filename}")
             # print(n_frames, frame_counter, duration, '\n')            
             return duration
     return None

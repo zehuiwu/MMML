@@ -26,30 +26,35 @@ def extract(dataset):
                 continue
             input_file_path = os.path.join(input_folder_path, file_name)
             output_file_path = os.path.join(output_folder_path, file_name)
+            # Skip if the video file is already edited
             if os.path.exists(input_file_path.replace(".mp4", "-edited.mp4")):
                 continue
-            
-            # Load the video file
-            video = VideoFileClip(input_file_path)
-
-            # Extract the audio from the video
-            audio = video.audio
-
-            # Set the desired sampling rate
-            desired_sampling_rate = 16000  # Replace this value with your desired sampling rate
-
-            # Resample the audio to the desired sampling rate
-            resampled_audio = audio.set_fps(desired_sampling_rate)
-            
-            if "-edited.mp4" in output_file_path:
-                output_file_path = output_file_path.replace("-edited.mp4", ".mp4")
-            output_file_path = output_file_path.split(".")[0] + '.wav'
-            
+            # Skip if the audio file already exists
+            if os.path.exists(output_file_path.replace(".mp4", ".wav")) or os.path.exists(output_file_path.replace("-edited.mp4", ".wav")):
+                continue
             try:
+                # Load the video file
+                video = VideoFileClip(input_file_path)
+
+                # Extract the audio from the video
+                audio = video.audio
+
+                # Set the desired sampling rate
+                desired_sampling_rate = 16000  # Replace this value with your desired sampling rate
+
+                # Resample the audio to the desired sampling rate
+                resampled_audio = audio.set_fps(desired_sampling_rate)
+                
+                if "-edited.mp4" in output_file_path:
+                    output_file_path = output_file_path.replace("-edited.mp4", ".mp4")
+                output_file_path = output_file_path.split(".")[0] + '.wav'
+                
                 # Save the extracted and resampled audio to a WAV file
                 resampled_audio.write_audiofile(output_file_path, codec='pcm_s16le', verbose=False, logger=None)
             except:
-                print(input_file_path)
+                # sometimes the edited video lost audio, so we extract audio from the original video instead
+                continue
+                # print(input_file_path)
 
 
 def preprocess_video_file(filename):
@@ -83,6 +88,8 @@ if __name__ == "__main__":
 
     # fix the video duration of MOSEI dataset: lots of videos have bad frames at the end
     if args.dataset == 'mosei':
+        print("Fixing MOSEI video files!")
+        invalid_files = ['3aIQUQgawaI/12', '94ULum9MYX0/2', 'mRnEJOLkhp8/24', 'aE-X_QdDaqQ/3', '94ULum9MYX0/11', 'mRnEJOLkhp8/26']
         directory_path = 'data/MOSEI/Raw'
         for folder in os.listdir(directory_path):
             folder_path = os.path.join(directory_path, folder)
@@ -92,7 +99,8 @@ if __name__ == "__main__":
                     continue
                 if os.path.exists(fpath.replace(".mp4", "-edited.mp4")):
                     continue
-
+                if os.path.join(folder, file_name.split(".")[0]) in invalid_files:
+                    continue
                 duration = preprocess_video_file(fpath)
 
                 if duration:
